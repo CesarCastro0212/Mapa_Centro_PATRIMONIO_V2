@@ -1,0 +1,1125 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+* {
+  font-family: "Roboto", sans-serif;
+  ;
+}
+
+html {
+  height: 100%;
+  overflow: hidden;
+  overflow-x: hidden;        /* Bloquea scroll horizontal en móviles */
+  /* Deshabilita el scroll de la página del mapa */
+  /* Prevenir zoom de página con gestos en móviles */
+  touch-action: manipulation;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  overflow-x: hidden;        /* Bloquea scroll horizontal en móviles */
+  max-width: 100vw;          /* Contiene el ancho al viewport */
+  /* Deshabilita el scroll del contenedor principal */
+  /* Prevenir selección accidental de texto que confunde el zoom */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+div {
+  position: relative;
+}
+
+#map {
+  width: 100%;
+  height: 120%;
+  background: white;
+}
+
+/* Hide leaflet layers control and let us take control over */
+.leaflet-control-layers-toggle {
+  display: none;
+}
+
+/* ===== PEEK HINT: degradado inferior indica scroll disponible en Puertas ===== */
+
+/* Degradado en el borde inferior del menú cuando el submenú de Puertas tiene contenido */
+#control-overlay:has(#submenuACCESOS:not(:empty))::after {
+  content: "";
+  position: sticky;
+  bottom: -14px;
+  left: 0;
+  right: 0;
+  height: 36px;
+  background: linear-gradient(to bottom,
+      rgba(0, 181, 226, 0) 0%,
+      rgba(0, 90, 130, 0.8) 100%);
+  display: block;
+  pointer-events: none;
+  border-radius: 0 0 15px 0;
+  animation: fade-hint 1.8s ease-in-out 0.5s infinite alternate;
+}
+
+@keyframes fade-hint {
+  0% {
+    opacity: 0.3;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ===== END PEEK HINT ===== */
+
+/* Customize the label (the pf-control-layers-checkbox-container) */
+.pf-control-layers-checkbox-container {
+  display: block;
+  position: relative;
+  padding-left: 5px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 12px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  border-left: 5px solid greenyellow;
+}
+
+/* Hide the browser's default checkbox */
+.pf-control-layers-checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.pf-control-layers-checkmark {
+  padding: 1rem;
+  color: white;
+  border-radius: 0px 9999px 9999px 0px;
+  padding-left: 10px;
+  box-sizing: border-box;
+  display: block;
+}
+
+.btn-marker {
+  position: relative;
+  display: flex;
+  margin-top: 7%;
+  justify-content: center;
+  width: 100%;
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  padding: 5px;
+  color: white;
+  background-color: #00b5e2;
+  border-radius: 0.35rem;
+  border-color: #01b6e3;
+}
+
+/*********************** DEPARTAMENTO DE PLANTA FÍSICA PF **************************/
+.PF {
+  position: absolute;
+  font-family: sans-serif;
+  font-size: medium;
+  left: 5%;
+  opacity: .5;
+  top: 94%;
+  z-index: 999;
+}
+
+.pagina {
+  position: absolute;
+  font-family: sans-serif;
+  font-size: small;
+  left: 5%;
+  opacity: .5;
+  top: 97%;
+  z-index: 999;
+}
+
+
+
+/************************ MENU *************************/
+
+/* Animación tipo campana: oscila alrededor del punto de anclaje superior */
+@keyframes menu-wobble {
+  0% {
+    transform: rotate(90deg);
+  }
+
+  7% {
+    transform: rotate(74deg);
+  }
+
+  15% {
+    transform: rotate(106deg);
+  }
+
+  23% {
+    transform: rotate(77deg);
+  }
+
+  31% {
+    transform: rotate(103deg);
+  }
+
+  39% {
+    transform: rotate(81deg);
+  }
+
+  47% {
+    transform: rotate(99deg);
+  }
+
+  55% {
+    transform: rotate(84deg);
+  }
+
+  63% {
+    transform: rotate(96deg);
+  }
+
+  71% {
+    transform: rotate(86deg);
+  }
+
+  79% {
+    transform: rotate(94deg);
+  }
+
+  86% {
+    transform: rotate(88deg);
+  }
+
+  92% {
+    transform: rotate(92deg);
+  }
+
+  96% {
+    transform: rotate(89deg);
+  }
+
+  100% {
+    transform: rotate(90deg);
+  }
+}
+
+.menu_icon {
+  position: absolute;
+  width: 50px;
+  height: 100px;
+  left: 5%;
+  top: 8%;
+  /* Pivote en el lado izquierdo: el lado derecho oscila como campana */
+  transform-origin: left right;
+  z-index: 1001;
+  /* Campana: dura 3s, arranca con el GIF, se reproduce una vez */
+  animation: menu-wobble 3s ease-in-out 0.6s 1 both;
+}
+
+.button-modal {
+  position: absolute;
+  background-color: #00b5e2;
+  background-image: url("../images/imgs/recursos/lupa.png");
+  z-index: 110;
+  background-size: 60% 70%;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  border: none;
+  width: 6%;
+  height: 5%;
+  border-radius: 100%;
+}
+
+.table-container {
+  overflow-y: auto;
+  max-height: 200px;
+}
+
+
+.subMenu {
+  position: relative;
+  left: 4%;
+  justify-content: space-between;
+  text-align: left;
+  font-weight: 400;
+  border-radius: 0px 9999px 9999px 0px;
+  border-color: transparent;
+  margin: 0.5px;
+  font-size: 12px;
+  color: white;
+  font-family: "Roboto", sans-serif;
+  border-width: 1px;
+  padding: 5px;
+  width: 90%;
+  z-index: 2000;
+}
+
+.subMenuGreen {
+  background-color: rgb(0, 255, 0, 0.7);
+  color: #000;
+}
+
+.subMenuPink {
+  background-color: rgb(255, 0, 255, 0.7);
+}
+
+.subMenuYellow {
+  background-color: rgb(255, 255, 0, 0.7);
+  color: #000;
+}
+
+.subMenuBlue {
+  background-color: rgb(0, 0, 255, 0.7);
+}
+
+.subMenuRed {
+  background-color: rgb(255, 0, 0, 0.7);
+}
+
+
+/************************ END MENU *************************/
+
+/************************ MODAL ************************/
+
+/* The modal-modal-close (background) */
+.modal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 2000;
+  /* Sit on top */
+  left: 0px;
+  top: -13px;
+  width: 100%;
+  /* Full width */
+  height: 105%;
+  /* Full height */
+  overflow: scroll;
+  /* Enable scroll if needed */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 2% auto;
+  /* 15% from the top and centered */
+  border: 1px solid #888;
+  width: 75%;
+  /* Could be more or less, depending on screen size */
+  text-align: center;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  background-color: transparent;
+}
+
+/* The modal-close Button */
+.modal-close {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  left: 6%;
+}
+
+.modal-close:hover,
+.modal-close:focus {
+  color: rgb(255, 0, 0);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.imgMinimapa {
+  left: 9px;
+  top: 14.8rem;
+  width: 95%;
+  border-radius: 3%;
+}
+
+.modalimg {
+  border-radius: 1%;
+  width: 98%;
+  top: 90%;
+  left: 0px;
+  border-radius: 3%;
+}
+
+.btnBICIChico {
+  position: absolute;
+  opacity: 130%;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  z-index: 110;
+  background-position: center;
+  background-image: url("../images/imgs/recursos/bici.png");
+  border: none;
+  width: 6%;
+  height: 5%;
+  border-radius: 100%;
+}
+
+.btnBUSChico {
+  position: absolute;
+  opacity: 130%;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  z-index: 110;
+  background-position: center;
+  background-image: url("../images/imgs/recursos/bus.png");
+  border: none;
+  width: 6%;
+  height: 5%;
+  border-radius: 100%;
+}
+
+.btnBICINormal {
+  position: absolute;
+  opacity: 130%;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  z-index: 110;
+  background-position: center;
+  background-image: url("../images/imgs/recursos/bici.png");
+  border: none;
+  width: 8%;
+  height: 7%;
+  border-radius: 100%;
+}
+
+.btnBUSNormal {
+  position: absolute;
+  opacity: 130%;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  z-index: 110;
+  background-position: center;
+  background-image: url("../images/imgs/recursos/bus.png");
+  border: none;
+  width: 8%;
+  height: 7%;
+  border-radius: 100%;
+}
+
+.btnBICIGrande {
+  position: absolute;
+  opacity: 130%;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  z-index: 110;
+  background-position: center;
+  background-image: url("../images/imgs/recursos/bici.png");
+  border: none;
+  width: 9.5%;
+  height: 8.5%;
+  border-radius: 100%;
+}
+
+.btnBUSGrande {
+  position: absolute;
+  opacity: 130%;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  z-index: 110;
+  background-position: center;
+  background-image: url("../images/imgs/recursos/bus.png");
+  border: none;
+  width: 9.5%;
+  height: 8.5%;
+  border-radius: 100%;
+}
+
+.modal-content-img,
+#caption {
+  -webkit-animation-name: zoom;
+  -webkit-animation-duration: 0.6s;
+  animation-name: zoom;
+  animation-duration: 0.6s;
+}
+
+#caption {
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
+  text-align: center;
+  color: #ccc;
+  padding: 10px 0;
+  height: 150px;
+}
+
+.modal-content-img {
+  position: relative;
+  top: 40px;
+  margin: auto;
+  display: block;
+  width: 97%;
+  max-width: 700px;
+}
+
+#myImg:hover {
+  opacity: 0.7;
+}
+
+/* The Modal (background) */
+.modal-Level-img {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 2000;
+  /* Sit on top */
+  padding-top: 100px;
+  /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.9);
+  /* Black w/ opacity */
+}
+
+.modal-Acces-img {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 2000;
+  /* Sit on top */
+  padding-top: 100px;
+  /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.9);
+  /* Black w/ opacity */
+}
+
+#myImg {
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.modal-close-img {
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.modal-close-img:hover,
+.modal-close-img:focus {
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* The modal-close Button */
+/* .modal-close-img {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  left: 6%;
+}
+.modal-close-img:hover,
+.modal-close-img:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+} */
+.modal-close-acces {
+  color: #aaa;
+  font-size: 28px;
+  font-weight: bold;
+  left: 6%;
+}
+
+.modal-close-acces:hover,
+.modal-close-acces:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
+/************************ END MODAL ************************/
+
+/************************ RESOURCES MODAL **********************/
+/* .modal-title{
+  max-width:47%;
+  align-content: center;
+  justify-content: center;
+  left: 0%;
+ } */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  background-color: #fefefe;
+}
+
+.modal-header-acces {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  background-color: #fefefe;
+}
+
+.b {
+  display: inline-block;
+  padding: 0.7%;
+  border-color: #01b6e3;
+  width: 116px;
+  background-color: #01b6e3;
+  font-size: 12px;
+  color: white;
+  border-radius: 0.35rem;
+}
+
+.b:hover {
+  background-color: #0296bb;
+}
+
+.b1 {
+  top: 2%;
+  display: inline-block;
+
+}
+
+.b1Acces {
+  top: 2%;
+  display: inline-block;
+
+}
+
+/************************ END RESOURCES MODAL **********************/
+
+/************************ CONTROL OVERLAY ************************/
+#control-overlay {
+  position: absolute;
+  display: flex;
+  top: 20%;
+  left: 0;
+  transition: 0.3s;
+  background-color: #00b5e2;
+  border: 1px solid black;
+  border-radius: 0 15px 15px 0;
+  padding: 0.875rem;
+  z-index: 1000;
+  max-height: calc(81dvh - 2rem);
+  max-width: min(85vw, 320px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  box-sizing: border-box;
+}
+
+.areas {
+  margin-left: 3px;
+  color: black;
+}
+
+/* .menu-visible{
+  visibility: visible;
+  animation-name: slide-in-down;
+  animation-duration: 1s;
+  transition: all 1s;
+} */
+.menu-visible {
+  visibility: visible;
+  animation-name: slide-in-left;
+  animation-duration: 1s;
+  transition: all 1s;
+}
+
+/* .menu-hidden{
+  visibility: hidden;
+  animation-name: slide-in-up;
+  animation-duration: 1s;
+  transition: 1s;
+} */
+.menu-hidden {
+  visibility: hidden;
+  animation-name: slide-in-right;
+  animation-duration: 1s;
+  transition: 1s;
+}
+
+/* @keyframes slide-in-down{
+  0%{
+    -webkit-transform: translateY(500px);
+    transform: translateY(500px);
+    opacity: 0;
+  }
+  100%{
+    -webkit-transform: translateY(0);
+    transform: translateY(1);
+    opacity: 1;
+  }
+} */
+@keyframes slide-in-left {
+  0% {
+    -webkit-transform: translateX(-500px);
+    transform: translateX(-500px);
+    opacity: 0;
+  }
+
+  100% {
+    -webkit-transform: translateX(1);
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-right {
+  100% {
+    -webkit-transform: translateX(-500px);
+    transform: translateX(-500px);
+    opacity: 0;
+  }
+
+  0% {
+    -webkit-transform: translateX(0);
+    transform: translateX(1);
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes zoom {
+  from {
+    -webkit-transform: scale(0)
+  }
+
+  to {
+    -webkit-transform: scale(1)
+  }
+}
+
+@keyframes zoom {
+  from {
+    transform: scale(0)
+  }
+
+  to {
+    transform: scale(1)
+  }
+}
+
+
+#control-overlay p {
+  text-align: center;
+}
+
+#control-overlay .control-layers {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#control-overlay .control-layers-button {
+  font-size: 14px;
+  border: none;
+  background: none;
+  color: white;
+  cursor: pointer;
+  padding: 0;
+  padding-left: 5px;
+  margin: 0;
+  width: 100%;
+}
+
+.control-layers-button span {
+  display: block;
+  border-radius: 0px 9999px 9999px 0px;
+  padding: 14px 28px;
+  text-align: left;
+  font-weight: 600;
+}
+
+#control-overlay .control-layers-button-green {
+  border-left: 5px solid rgb(0, 255, 0);
+  color: black;
+}
+
+#control-overlay .control-layers-button-green span {
+  background-color: rgb(0, 255, 0);
+}
+
+#control-overlay .control-layers-button-blue {
+  border-left: 5px solid rgb(0, 0, 255);
+}
+
+#control-overlay .control-layers-button-blue span {
+  background-color: rgb(0, 0, 255);
+}
+
+#control-overlay .control-layers-button-yellow {
+  color: black;
+  border-left: 5px solid rgb(255, 255, 0);
+}
+
+#control-overlay .control-layers-button-yellow span {
+  background-color: rgb(255, 255, 0);
+}
+
+#control-overlay .control-layers-button-pink {
+  border-left: 5px solid rgb(255, 0, 255);
+}
+
+#control-overlay .control-layers-button-pink span {
+  background-color: rgb(255, 0, 255);
+}
+
+#control-overlay .control-layers-button-red {
+  border-left: 5px solid rgb(255, 0, 0);
+}
+
+#control-overlay .control-layers-button-red span {
+  background-color: rgb(255, 0, 0);
+}
+
+#control-overlay .control-layers-button-facultades {
+  border-left: 5px solid rgb(0, 59, 92);
+}
+
+#control-overlay .control-layers-button-facultades span {
+  background-color: rgb(0, 59, 92);
+}
+
+#control-overlay>p {
+  writing-mode: vertical-lr;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+/************************ END CONTROL OVERLAY ************************/
+
+.leaflet-tooltip.nombre-facultad {
+  background: rgba(0, 0, 0, 0.4);
+  /* fondo semitransparente */
+  border: none;
+  /* sin borde */
+  box-shadow: none;
+  color: #fff;
+  /* texto blanco */
+  font-weight: bold;
+  text-shadow: 1px 1px 2px #000;
+  /* mejora visibilidad sobre el mapa */
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+  transform: translateY(-50%);
+  /* centra verticalmente */
+  pointer-events: none;
+  /* evita interferir con clics */
+}
+
+#zoomInGIF {
+  display: flex;
+  position: absolute;
+  width: 80%;
+  z-index: 1002;
+  left: 10%;
+  top: 30%;
+  /* El GIF es solo visual: no puede recibir eventos de mouse/touch/zoom */
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.oculto {
+  display: none;
+}
+
+.img-cns {
+  /* position: absolute; */
+  width: 7%;
+  border: 1px solid #000;
+  border-radius: 22px;
+  /* z-index: 1001; */
+  margin-left: 7px;
+  /* top: 30%; */
+}
+
+/* ═══════════════════════════════════════════════════════════
+   BUSCADOR DE ESPACIOS PATRIMONIALES
+   ═══════════════════════════════════════════════════════════ */
+
+#map-search-box {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1050;
+  /* min() garantiza que nunca supere el ancho disponible con márgenes laterales */
+  width: min(520px, calc(100vw - 24px));
+  max-width: calc(100vw - 24px);  /* Evita desbordamiento horizontal en móviles */
+  box-sizing: border-box;
+  filter: drop-shadow(0 4px 18px rgba(9, 46, 72, 0.28));
+  /* Evitar que Leaflet capture eventos sobre el buscador */
+  pointer-events: all;
+}
+
+#map-search-inner {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  box-sizing: border-box;    /* El padding no suma al ancho del elemento */
+  width: 100%;               /* Respeta el ancho del contenedor padre */
+  overflow: hidden;          /* Nada desborda la píldora */
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(18, 46, 72, 0.18);
+  border-radius: 999px;
+  padding: 6px 6px 6px 14px;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+#map-search-inner:focus-within {
+  border-color: #09B5E2;
+  box-shadow: 0 0 0 3px rgba(9, 181, 226, 0.18);
+}
+
+#map-search-icon {
+  color: #6b7f90;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-right: 8px;
+  pointer-events: none;
+}
+
+#map-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: "Source Sans 3", "Roboto", sans-serif;
+  /* ⚠️ IMPORTANTE: font-size debe ser ≥ 16px para que iOS/Android
+     NO hagan auto-zoom al hacer foco en el input. */
+  font-size: 16px;
+  font-weight: 500;
+  color: #122E48;
+  min-width: 0;
+  /* Quitar el botón × nativo del type="search" */
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+#map-search-input::placeholder {
+  color: #9ab0bf;
+  font-weight: 400;
+}
+
+/* Ocultar el icono nativo de borrado en Chrome/Safari */
+#map-search-input::-webkit-search-decoration,
+#map-search-input::-webkit-search-cancel-button,
+#map-search-input::-webkit-search-results-button,
+#map-search-input::-webkit-search-results-decoration {
+  display: none;
+}
+
+/* ── Botón limpiar ── */
+#map-search-clear {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: #e8eef2;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  color: #5a7080;
+  flex-shrink: 0;
+  transition: background 0.18s, color 0.18s;
+  margin-right: 6px;
+}
+
+#map-search-clear:hover {
+  background: #c9dce7;
+  color: #122E48;
+}
+
+/* ── Botón buscar ── */
+#map-search-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #122E48;
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 7px 18px;
+  font-family: "Source Sans 3", "Roboto", sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s, transform 0.12s;
+  letter-spacing: 0.3px;
+}
+
+#map-search-btn:hover {
+  background: #09B5E2;
+  transform: scale(1.04);
+}
+
+#map-search-btn:active {
+  transform: scale(0.97);
+}
+
+/* ── Lista de sugerencias ── */
+#map-search-suggestions {
+  list-style: none;
+  margin: 6px 0 0 0;
+  padding: 6px 0;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(9, 181, 226, 0.25);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(9, 46, 72, 0.14);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.search-suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  cursor: pointer;
+  font-family: "Source Sans 3", "Roboto", sans-serif;
+  font-size: 13px;
+  color: #1e3d55;
+  transition: background 0.15s, color 0.15s;
+  user-select: none;
+}
+
+.search-suggestion-item:hover,
+.search-suggestion-active {
+  background: rgba(9, 181, 226, 0.1);
+  color: #122E48;
+}
+
+.suggestion-icon {
+  color: #09B5E2;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.suggestion-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Animación: sin resultado (sacudida) ── */
+@keyframes search-shake {
+
+  0%,
+  100% {
+    transform: translateX(-50%);
+  }
+
+  15% {
+    transform: translateX(calc(-50% - 8px));
+  }
+
+  30% {
+    transform: translateX(calc(-50% + 8px));
+  }
+
+  45% {
+    transform: translateX(calc(-50% - 6px));
+  }
+
+  60% {
+    transform: translateX(calc(-50% + 6px));
+  }
+
+  75% {
+    transform: translateX(calc(-50% - 3px));
+  }
+
+  90% {
+    transform: translateX(calc(-50% + 3px));
+  }
+}
+
+#map-search-box:has(#map-search-input.search-notfound),
+#map-search-input.search-notfound~* {
+  /* Fallback: solo animar el inner */
+}
+
+#map-search-input.search-notfound {
+  color: #c0392b !important;
+}
+
+/* Aplicar la sacudida al contenedor completo */
+#map-search-box.search-shake {
+  animation: search-shake 0.55s ease;
+}
+
+/* Flash de éxito en el input */
+@keyframes search-flash-success {
+  0% {
+    background: rgba(9, 181, 226, 0.18);
+  }
+
+  100% {
+    background: transparent;
+  }
+}
+
+#map-search-input.search-found {
+  animation: search-flash-success 1.5s ease forwards;
+}
+
+/* ── Responsive: pantallas pequeñas ── */
+@media screen and (max-width: 480px) {
+  #map-search-btn span {
+    display: none;
+  }
+
+  #map-search-btn {
+    padding: 7px 10px;
+  }
+}

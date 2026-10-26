@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>Document</title>
+  <link rel="stylesheet" href="assets/css/leaflet.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/stylepc.css">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body>
+  <div id="map"></div>
+
+  <!-- ======= BUSCADOR DE ESPACIOS ======= -->
+  <div id="map-search-box" role="search" aria-label="Buscar espacio patrimonial">
+    <div id="map-search-inner">
+      <!-- Ícono lupa -->
+      <span id="map-search-icon" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </span>
+      <input
+        id="map-search-input"
+        type="search"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="Buscar espacio patrimonial…"
+        aria-label="Buscar espacio patrimonial"
+        aria-autocomplete="list"
+        aria-controls="map-search-suggestions"
+      >
+      <!-- Botón limpiar -->
+      <button id="map-search-clear" type="button" aria-label="Limpiar búsqueda" style="display:none;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+      <!-- Botón buscar -->
+      <button id="map-search-btn" type="button" aria-label="Buscar">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <span>Buscar</span>
+      </button>
+    </div>
+    <!-- Lista de sugerencias -->
+    <ul id="map-search-suggestions" role="listbox" aria-label="Sugerencias" style="display:none;"></ul>
+  </div>
+  <!-- ======= FIN BUSCADOR ======= -->
+  <!-- Modal -->
+  <div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <div class="flex items-stretch min-h-[58px] border-b border-gray-100">
+
+        <!-- Bloque azul marino con el nombre -->
+        <div class="bg-[#122E48] flex items-center px-5 py-2 gap-2.5 min-w-0 shrink" style="flex: 0 1 auto;">
+          <svg class="shrink-0" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#09B5E2" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+          <div class="min-w-0">
+            <p class="modal-title m-0 text-[13px] font-bold text-white leading-snug overflow-wrap-normal"
+              style="font-family: Source Sans 3, sans-serif; overflow-wrap: normal; word-break: normal; white-space: normal;">
+            </p>
+            <p class="m-0 text-[10px] text-[#09B5E2] font-bold tracking-widest"
+              style="font-family: Source Sans 3, sans-serif;">BUAP</p>
+          </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="flex-1 flex items-center justify-end px-4 py-2 gap-1.5 bg-white flex-wrap">
+
+          <button type="button" onclick="buttonRecorrido()"
+            class="flex items-center gap-1.5 bg-[#122E48] font-bold text-white text-xs px-4 py-1.5 rounded border-[1.5px] border-[#122E48] cursor-pointer whitespace-nowrap hover:bg-[#FFFFFF] hover:text-black transition-opacity duration-150"
+            style="font-family: Source Sans 3, sans-serif;">
+            <svg class="shrink-0" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#09B5E2"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <!-- Cubo transparente -->
+              <path d="M12 3L5 7V17L12 21L19 17V7L12 3Z" stroke="#09B5E2" stroke-width="1.8"
+                fill="rgba(9,181,226,0.08)" />
+              <path d="M12 3V21" stroke="#09B5E2" stroke-width="1.4" opacity="0.7" />
+              <path d="M5 7L12 11L19 7" stroke="#09B5E2" stroke-width="1.4" opacity="0.7" />
+              <path d="M7 4.5C5.5 5.2 4.4 6.4 3.8 8" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" />
+              <path d="M3.5 5.8L3.8 8.3L6.2 7.6" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+            Recorrido 3D
+          </button>
+
+          <button id="url-info" type="button" onclick="buttonInformation()"
+            class="flex items-center gap-1.5 bg-[#122E48] font-bold text-white text-xs px-4 py-1.5 rounded border-[1.5px] border-[#122E48] cursor-pointer whitespace-nowrap hover:bg-[#FFFFFF] hover:text-black transition-opacity duration-150"
+            style="font-family: Source Sans 3, sans-serif;">
+            <svg class="shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#09B5E2"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="16" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12.01" y2="8" />
+            </svg>
+            Información
+          </button>
+
+          <button id="url-ruta" type="button" onclick="buttonRuta()"
+            class="flex items-center gap-1.5 bg-[#122E48] text-white text-xs font-bold px-4 py-1.5 rounded border-[1.5px] border-[#122E48] cursor-pointer whitespace-nowrap hover:bg-[#FFFFFF] hover:text-black transition-opacity duration-150"
+            style="font-family: Source Sans 3, sans-serif;">
+            <svg class="shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#09B5E2"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            Cómo llegar
+          </button>
+          <span
+            class="modal-close text-red-500 text-2xl px-2 py-1 rounded leading-none cursor-pointer hover:text-[#122E48] hover:bg-gray-100 transition-colors duration-150 shrink-0">&times;</span>
+
+        </div>
+      </div>
+
+      <div id="modal-img-container" class="div-container">
+      </div>
+      <div id="modal-img-minimap" class="btn">
+      </div>
+    </div>
+  </div>
+  <!-- End Modal -->
+
+  <!-- Niveles -->
+  <div id="modal-level" class="modal-Level-img">
+    <span class="modal-close-img">&times;</span>
+    <img class="modal-content-img" id="level" loading="lazy">
+    <div id="caption"></div>
+  </div>
+  <!-- End Niveles -->
+
+
+  <!-- Accesos -->
+  <div id="modal-acces" class="modal-Acces-img">
+
+    <div class="flex items-stretch min-h-[58px] border-b border-gray-100">
+
+      <!-- Bloque azul marino con el nombre -->
+      <div class="bg-[#122E48] flex items-center px-5 py-2 gap-2.5 min-w-0 shrink" style="flex: 0 1 auto;">
+        <svg class="shrink-0" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#09B5E2" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+        <div class="min-w-0">
+          <p class="title-acces m-0 text-[13px] font-bold text-white leading-snug overflow-wrap-normal"
+            style="font-family: Source Sans 3, sans-serif; overflow-wrap: normal; word-break: normal; white-space: normal;">
+          </p>
+          <p class="m-0 text-[10px] text-[#09B5E2] font-bold tracking-widest"
+            style="font-family: Source Sans 3, sans-serif;">BUAP</p>
+        </div>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="flex-1 flex items-center justify-end px-4 py-2 gap-1.5 bg-white flex-wrap">
+
+        <button type="button" onclick="buttonRuta()"
+          class="flex items-center gap-1.5 bg-[#122E48] text-white text-xs font-bold px-4 py-1.5 rounded border-[1.5px] border-[#122E48] cursor-pointer whitespace-nowrap hover:bg-[#FFFFFF] hover:text-black transition-opacity duration-150"
+          style="font-family: Source Sans 3, sans-serif;">
+          <svg class="shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#09B5E2" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+          Cómo llegar
+        </button>
+
+        <span
+          class="modal-close-acces text-red-500 text-2xl px-2 py-1 rounded leading-none cursor-pointer hover:text-[#122E48] hover:bg-gray-100 transition-colors duration-150 shrink-0">&times;</span>
+
+      </div>
+    </div>
+
+    <img class="modal-content-img" id="acces" loading="lazy">
+    <div id="caption"></div>
+  </div>
+  <!-- End accesos -->
+
+  <!-- Control Overlay -->
+  <div id="control-overlay" class="menu-hidden">
+    <p class="areas">Barrio Histórico Universitario</p>
+    <div class="control-layers">
+      <div>
+        <button class="control-layers-button control-layers-button-yellow"
+          onclick="toggleArea('Barrio Histórico Universitario')">
+          <span style="align-self: center;">Barrio Histórico Universitario
+          </span>
+        </button>
+        <div id="submenuBarrioHistoricoUniversitario" class="table-container"></div>
+      </div>
+      <div>
+        <button class="control-layers-button control-layers-button-blue" onclick="toggleArea('Corredor Carolino')">
+          <span>Corredor Carolino</span>
+        </button>
+        <div id="submenuCorredorCarolino" class="table-container"></div>
+      </div>
+      <div>
+        <button class="control-layers-button control-layers-button-red" onclick="toggleArea('Corredor Jesuita')">
+          <span>Corredor Jesuita</span>
+        </button>
+        <div id="submenuCorredorJesuita" class="table-container"></div>
+      </div>
+      <div>
+        <button class="control-layers-button control-layers-button-green" onclick="toggleArea('Corredor San José')">
+          <span>Corredor San José</span>
+        </button>
+        <div id="submenuCorredorSanJose" class="table-container"></div>
+      </div>
+      <div>
+        <button class="control-layers-button control-layers-button-pink" onclick="toggleArea('Corredor Analco')">
+          <span>Corredor Analco</span>
+        </button>
+        <div id="submenuCorredorAnalco" class="table-container"></div>
+      </div>
+    </div>
+  </div>
+  <!-- End Control Overlay -->
+
+  <div class="PF">
+    Patrimonio Histórico Universitario
+  </div>
+  <div class="pagina">
+    cultura.buap.mx/patrimoniohistorico/
+  </div>
+
+  <img id="zoomInGIF" src="assets/images/imgs/recursos/zoomN.gif" alt="">
+  <img class="menu_icon" src="assets/images/imgs/recursos/Menu iconos/menu-11-2.png" onclick="menu_visibility()"
+    loading="lazy">
+  <script src="assets/js/leaflet.js"></script>
+  <script src="assets/js/src/index.js"></script>
+  <script src="assets/js/src/gif.js"></script>
+  <script src="assets/js/src/modal.js"></script>
+  <script src="assets/js/src/icons.js"></script>
+  <script src="assets/js/src/markers.js"></script>
+  <script src="assets/js/src/overlays.js"></script>
+  <script src="assets/js/src/geometry.js"></script>
+  <script src="assets/js/src/facultades.js"></script>
+  <script src="assets/js/src/menu.js"></script>
+  <script src="assets/js/src/submenu.js"></script>
+  <script src="assets/js/src/unselect.js"></script>
+  <script src="assets/js/src/search.js"></script>
+  <script>
+    function toggleArea(areaName) {
+      // Si las facultades están visibles, apagarlas al activar cualquier otro botón
+      if (typeof grupoFacultades !== "undefined" && map.hasLayer(grupoFacultades)) {
+        map.removeLayer(grupoFacultades);
+      }
+
+      // Determinar si el submenú actual está abierto
+      let isOpen = false;
+      switch (areaName) {
+        case "Barrio Histórico Universitario": isOpen = submenuBarrioHistoricoUniversitario; break;
+        case "Corredor Carolino": isOpen = submenuCorredorCarolino; break;
+        case "Corredor Jesuita": isOpen = submenuCorredorJesuita; break;
+        case "Corredor San José": isOpen = submenuCorredorSanJose; break;
+        case "Corredor Analco": isOpen = submenuCorredorAnalco; break;
+      }
+
+      // Queremos cambiar al estado opuesto
+      const shouldBeOpen = !isOpen;
+
+      const inputs = controlLayers._layerControlInputs;
+
+      for (let i = inputs.length - 1; i >= 0; i--) {
+        input = inputs[i];
+        inputName = inputs[i].labels[0].innerText.trimStart();
+        if (inputName == areaName) {
+          input.checked = shouldBeOpen;
+        }
+      }
+      controlLayers._onInputClick();
+      submenu(areaName);
+
+      // Encender/apagar el polígono de zona y centrar el mapa al activar
+      if (typeof geometryPolygonMap !== "undefined" && geometryPolygonMap[areaName]) {
+        const polyLayer = geometryPolygonMap[areaName];
+        if (shouldBeOpen) {
+          if (!map.hasLayer(polyLayer)) {
+            polyLayer.addTo(map);
+          }
+          console.log('Flying to', polyLayer.getBounds()); flyToGeometryLayer(polyLayer);
+        } else {
+          if (map.hasLayer(polyLayer)) {
+            map.removeLayer(polyLayer);
+          }
+        }
+      }
+
+      console.log(areaName);
+    }
+
+
+  </script>
+</body>
+
+</html>
