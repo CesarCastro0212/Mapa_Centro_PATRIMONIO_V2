@@ -36,10 +36,12 @@ function buildSearchIndex() {
   areaMap.forEach(function (item) {
     item.geoJSON.forEach(function (feature) {
       var name = feature.properties.name;
+      var code = feature.properties.code || "";
       var coords = feature.geometry.coordinates;
       var latlng = L.latLng(coords[1], coords[0]);
       index.push({
         name: name,
+        code: code,
         normalizedName: normalizeText(name),
         latlng: latlng,
         leafletLayer: item.layer,
